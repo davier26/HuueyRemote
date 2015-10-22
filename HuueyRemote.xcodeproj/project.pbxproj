@@ -8,12 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		8EB1DA421BD837FC0076FC36 /* HuueyRemote.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EB1DA411BD837FC0076FC36 /* HuueyRemote.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8EB1DA4D1BD838360076FC36 /* HuueyInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB1DA4C1BD838360076FC36 /* HuueyInterface.swift */; };
+		8EB1DA521BD839E10076FC36 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB1DA511BD839E10076FC36 /* SwiftyJSON.swift */; };
+		8EB1DA541BD83A1A0076FC36 /* HuueyLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB1DA531BD83A1A0076FC36 /* HuueyLight.swift */; };
+		8EB1DA561BD83A940076FC36 /* HuueyGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB1DA551BD83A940076FC36 /* HuueyGroup.swift */; };
+		8EB1DA7A1BD83FC70076FC36 /* Huuey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB1DA791BD83FC70076FC36 /* Huuey.swift */; };
+		8EB1DA7F1BD8452C0076FC36 /* HuueyScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB1DA7E1BD8452C0076FC36 /* HuueyScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8EB1DA3E1BD837FC0076FC36 /* HuueyRemote.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HuueyRemote.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EB1DA411BD837FC0076FC36 /* HuueyRemote.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HuueyRemote.h; sourceTree = "<group>"; };
 		8EB1DA431BD837FC0076FC36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8EB1DA4C1BD838360076FC36 /* HuueyInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuueyInterface.swift; sourceTree = "<group>"; };
+		8EB1DA511BD839E10076FC36 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
+		8EB1DA531BD83A1A0076FC36 /* HuueyLight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuueyLight.swift; sourceTree = "<group>"; };
+		8EB1DA551BD83A940076FC36 /* HuueyGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuueyGroup.swift; sourceTree = "<group>"; };
+		8EB1DA791BD83FC70076FC36 /* Huuey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Huuey.swift; sourceTree = "<group>"; };
+		8EB1DA7E1BD8452C0076FC36 /* HuueyScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuueyScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,10 +58,24 @@
 		8EB1DA401BD837FC0076FC36 /* HuueyRemote */ = {
 			isa = PBXGroup;
 			children = (
+				8EB1DA791BD83FC70076FC36 /* Huuey.swift */,
+				8EB1DA4C1BD838360076FC36 /* HuueyInterface.swift */,
+				8EB1DA7E1BD8452C0076FC36 /* HuueyScene.swift */,
+				8EB1DA551BD83A940076FC36 /* HuueyGroup.swift */,
+				8EB1DA531BD83A1A0076FC36 /* HuueyLight.swift */,
+				8EB1DA501BD839D70076FC36 /* Vendors */,
 				8EB1DA411BD837FC0076FC36 /* HuueyRemote.h */,
 				8EB1DA431BD837FC0076FC36 /* Info.plist */,
 			);
 			path = HuueyRemote;
+			sourceTree = "<group>";
+		};
+		8EB1DA501BD839D70076FC36 /* Vendors */ = {
+			isa = PBXGroup;
+			children = (
+				8EB1DA511BD839E10076FC36 /* SwiftyJSON.swift */,
+			);
+			name = Vendors;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -130,6 +156,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EB1DA561BD83A940076FC36 /* HuueyGroup.swift in Sources */,
+				8EB1DA7F1BD8452C0076FC36 /* HuueyScene.swift in Sources */,
+				8EB1DA7A1BD83FC70076FC36 /* Huuey.swift in Sources */,
+				8EB1DA541BD83A1A0076FC36 /* HuueyLight.swift in Sources */,
+				8EB1DA4D1BD838360076FC36 /* HuueyInterface.swift in Sources */,
+				8EB1DA521BD839E10076FC36 /* SwiftyJSON.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +260,7 @@
 		8EB1DA471BD837FC0076FC36 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -235,15 +268,19 @@
 				INFOPLIST_FILE = HuueyRemote/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = exposed.coding.HuueyRemote;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos appletvsimulator appletvos";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		8EB1DA481BD837FC0076FC36 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -251,9 +288,11 @@
 				INFOPLIST_FILE = HuueyRemote/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = exposed.coding.HuueyRemote;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos appletvsimulator appletvos";
 			};
 			name = Release;
 		};
@@ -276,6 +315,7 @@
 				8EB1DA481BD837FC0076FC36 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
