@@ -44,10 +44,11 @@ public class HuueyLight {
         return self.state["bri"]!
     }
     
-    public func update(hue:Int, sat:Int, bri:Int) {
+    public func update(hue:Int, sat:Int, bri:Int, on: Bool) {
         self.state["hue"] = hue
         self.state["sat"] = sat
         self.state["bri"] = bri
+        self.state["on"] = on
     }
 
     public func getUIColor() -> UIColor {

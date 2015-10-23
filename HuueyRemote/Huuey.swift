@@ -65,7 +65,9 @@ public class Huuey {
     
     public func set(on: Bool, lights: AnyObject) -> AnyObject {
         if let light = lights as? HuueyLight {
+            
             self.interface.set(on, light: light)
+            light.state["on"] = on
             return light
             
         }else if let lights = lights as? [HuueyLight] {
@@ -99,7 +101,7 @@ public class Huuey {
     public func set(hue:Int, sat:Int, bri:Int, lights:AnyObject) {
         if let light = lights as? HuueyLight {
             
-            light.update(hue, sat: sat, bri: bri)
+            light.update(hue, sat: sat, bri: bri, on:true)
             self.interface.set(hue, sat: sat, bri: bri, light: light)
             
         }else if let lights = lights as? [HuueyLight] {
