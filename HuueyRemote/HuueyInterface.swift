@@ -66,7 +66,8 @@ public class HuueyInterface {
     }
     
     public func set(scene: HuueyScene) {
-        
+        let data = generateDict(scene.getID())
+        self.request(self.generateUrl(HuueyGet.ScenesSet), method: HuueyMethods.PUT, data:data)
     }
     
     public func set(hue:Int, sat:Int, bri:Int, light:HuueyLight) {
@@ -87,6 +88,16 @@ public class HuueyInterface {
             }
             
             return lights
+        }else if get == HuueyGet.ScenesGet {
+            var scenes: [HuueyScene] = []
+            
+            for (key, value) in request {
+                if value["name"].stringValue.containsString("on") {
+                    scenes.append(HuueyScene(name: value["name"].stringValue, id: key))
+                }
+            }
+            
+            return scenes
         }
         
         return [""]
@@ -193,7 +204,7 @@ public class HuueyInterface {
                 baseUrl += HuueyConstants.HUE_ENDPOINT_LIGHTS
             break
             case .ScenesSet:
-                baseUrl += HuueyConstants.HUE_ENDPOINT_GROUPS + "/\(id!)/action"
+                baseUrl += HuueyConstants.HUE_ENDPOINT_GROUPS + "/0/action"
             break
             case .ScenesGet:
                 baseUrl += HuueyConstants.HUE_ENDPOINT_SCENES
@@ -215,9 +226,10 @@ public class HuueyInterface {
         return baseUrl
     }
     
-    private func generateDict(scene: String) -> [String:String] {
+    private func generateDict(scene: String) -> [String:AnyObject] {
         return [
-            "scene": scene
+            "scene": scene,
+            "on": true
         ]
     }
     
@@ -231,7 +243,8 @@ public class HuueyInterface {
         return [
             "hue":hue,
             "sat":sat,
-            "bri":bri
+            "bri":bri,
+            "on":true
         ]
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 public class Huuey {
-    let interface: HuueyInterface!
+    var interface: HuueyInterface!
     
     public var lights:[HuueyLight]!
     public var scenes:[HuueyScene]!
@@ -31,11 +31,14 @@ public class Huuey {
     public init(interface: HuueyInterface) {
         self.interface = interface
         self.setup()
+        
     }
     
     public func setup() {
+        self.interface = HuueyInterface()
+        
         // TODO: Implement Groups
-//        self.scenes = self.interface.get(HuueyGet.ScenesGet) as! [HuueyScene]
+        self.scenes = self.interface.get(HuueyGet.ScenesGet) as! [HuueyScene]
         self.lights = self.interface.get(HuueyGet.Lights) as! [HuueyLight]
     }
     

@@ -10,12 +10,18 @@ import Foundation
 
 public class HuueyScene {
     private var name: String!
+    private var id: String!
     
     public func getName() -> String {
         return name
     }
     
-    public init(name: String) {
+    public func getID() -> String {
+        return id
+    }
+    
+    public init(name: String, id:String) {
         self.name = name
+        self.id = id
     }
 }
