@@ -9,10 +9,20 @@
 import Foundation
 
 public class HuueyLight {
-    public var state = [String:AnyObject!]()
-    public var name: String!
-    public var id: Int!
+    /**
+        Holder variables
+     */
+    private var state = [String:AnyObject!]()
+    private var name: String!
+    private var id: Int!
     
+    
+    /**
+        Public initializer
+     
+        - Parameter: Data, JSON array from HuueyInterface
+        - Parameter: id, ID of the light
+     */
     public init(data: JSON, id: Int) {
         self.name = data.dictionary!["name"]!.stringValue
         self.id = id
@@ -24,26 +34,65 @@ public class HuueyLight {
         }
     }
     
+    /**
+        - Returns: Id of the light
+     */
+    public func getId() -> Int {
+        return self.id
+    }
+    
+    /**
+        - Returns: Light is on or off
+     */
     public func getState() -> Bool {
         return (self.state["on"]?.boolValue)!
     }
     
+    /**
+        - Returns: Name of the light
+     */
     public func getName() -> String {
         return self.name
     }
     
+    /**
+        - Returns: Raw value of the hue 0 - 65280.0
+     */
     public func getColor() -> AnyObject {
         return self.state["hue"]!
     }
     
+    /**
+        - Returns: Saturation of the light 0 - 255
+     */
     public func getSaturation() -> AnyObject {
         return self.state["sat"]!
     }
     
+    /**
+        - Returns: Brightness of the light 0 - 255
+     */
     public func getBrightness() -> AnyObject {
         return self.state["bri"]!
     }
     
+    /**
+        Updates light state
+     
+        - Parameter: state: Bool
+     */
+    public func setState(state: Bool) {
+        self.state["on"] = state
+    }
+    
+    /**
+        Updates the state of the light
+     
+        - Parameter: hue, Hue value of the light
+        - Parameter: sat, Saturation of the light
+        - Parameter: bri, Brightness of the light
+        - Parameter: on, Status of the light     
+     */
     public func update(hue:Int, sat:Int, bri:Int, on: Bool) {
         self.state["hue"] = hue
         self.state["sat"] = sat
@@ -51,6 +100,11 @@ public class HuueyLight {
         self.state["on"] = on
     }
 
+    /**
+        Returns UIColor of the light
+     
+        - Returns: UIColor     
+     */
     public func getUIColor() -> UIColor {
         let hue:Float = Float(self.getColor().integerValue)
         let sat:Double = Double(self.getSaturation().integerValue)

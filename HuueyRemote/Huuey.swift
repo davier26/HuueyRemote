@@ -9,12 +9,26 @@
 import Foundation
 
 public class Huuey {
-    var interface: HuueyInterface!
+    /**
+        Private HuueyInterface for connections
+     */
+    private var interface: HuueyInterface!
     
+    /**
+        Publicly available lights array
+     */
     public var lights:[HuueyLight]!
-    public var scenes:[HuueyScene]!
-    var groups:[HuueyGroup]!
     
+    /**
+        Publicly available scenes array
+     */
+    public var scenes:[HuueyScene]!
+    
+    /**
+        Public initializer
+     
+        Sets self.interface and checks if the interface is setup or not.
+     */
     public init() {
         self.interface = HuueyInterface()
         
@@ -23,25 +37,47 @@ public class Huuey {
         }
     }
     
+    /**
+        Public initializer
+     
+        Assumes you already know the addr/key of bridge
+     
+        - Parameter: addr, IP of Hue Bridge
+        - Parameter: key, Developer key
+     */
     public init(addr: String, key: String) {
         self.interface = HuueyInterface(addr: addr, key: key)
         self.setup()
     }
     
+    /**
+        Public initializer
+     
+        Assumes you already have an interface setup
+     
+        - Parameter: interface, HuueyInterface
+     */
     public init(interface: HuueyInterface) {
         self.interface = interface
         self.setup()
-        
     }
     
+    /**
+        Public initializer
+     
+        Grabs initial light data from the bridge
+     */
     public func setup() {
-        self.interface = HuueyInterface()
-        
         // TODO: Implement Groups
         self.scenes = self.interface.get(HuueyGet.ScenesGet) as! [HuueyScene]
         self.lights = self.interface.get(HuueyGet.Lights) as! [HuueyLight]
     }
     
+    /**
+        Returns true if everything is setup and ready to rock
+     
+        - Returns: Bool
+     */
     public func isReady() -> Bool {
         if self.interface == nil || self.interface.HUE_ADDR == nil || self.interface.HUE_KEY == nil {
             return false
@@ -54,53 +90,89 @@ public class Huuey {
         }
     }
     
+    /**
+        Checks if interface is connected to the bridge
+     
+        - Returns: Bool
+     */
     public func isConnected() -> Bool {
         return self.interface.bridgeConnected()
     }
     
+    /**
+        Trys to discover bridge, returns based on if successful
+     
+        - Returns: Bool
+     */
     public func discoveredBridge() -> Bool {
         return self.interface.discoverBridge()
     }
     
+    /**
+        Trys to connect to the bridge, returns based on if successful
+     
+        - Returns: Bool
+     */
     public func connectedToBridge() -> Bool {
         return self.interface.connectToBridge()
     }
     
-    public func set(on: Bool, lights: AnyObject) -> AnyObject {
+    
+    /**
+        Sets light(s) on/off
+     
+        - Parameter: on, Bool on/off
+        - Parameter: lights, HuueyLight, [HuueyLight]
+     */
+    public func set(on: Bool, lights: AnyObject){
         if let light = lights as? HuueyLight {
             
             self.interface.set(on, light: light)
-            light.state["on"] = on
-            return light
+            light.setState(on)
             
         }else if let lights = lights as? [HuueyLight] {
             
             for light in lights {
                 self.interface.set(on, light: light)
+                light.setState(on)
             }
-            return lights
             
         }else if let group = lights as? HuueyGroup {
             
             for light in group.lights {
                 self.interface.set(on, light: light)
+                light.setState(on)
             }
-            return group
             
         }else if let groups = lights as? [HuueyGroup] {
             
             for group in groups {
                 for light in group.lights {
                     self.interface.set(on, light: light)
+                    light.setState(on)
                 }
             }
-            return groups
-            
-        }else {
-            return false
         }
     }
+
+    /**
+        Sets brightness of light
+     
+        - Parameter: bri, Brightness of light 0 - 255
+        - Parameter: light, HuueyLight
+     */
+    public func setBrightness(bri: Int, light: HuueyLight) {
+        self.interface.set(bri, light: light)
+    }
     
+    /**
+        Sets the hue/sat/bri of given light(s)
+     
+        - Parameter: hue, Hue of light 0 - 65280.0
+        - Parameter: sat, Saturation of light 0 - 255
+        - Parameter: bri, Brightness of light 0 - 255
+        - Parameter: lights, AnyObject: Light(s) thats state should get updated
+     */
     public func set(hue:Int, sat:Int, bri:Int, lights:AnyObject) {
         if let light = lights as? HuueyLight {
             
@@ -130,10 +202,21 @@ public class Huuey {
         }
     }
     
+    /**
+        Sets a scene active
+     
+        - Parameter: scene, HuueyScene: Scene that should get activated
+     */
     public func set(scene: HuueyScene) {
         self.interface.set(scene)
     }
     
+    /**
+        Gets specific item from bridge
+     
+        - Parameter: type, HuueyGet
+        - Parameter: id, ID of item
+     */
     public func get(type: HuueyGet, id: Int) -> AnyObject{
         return self.interface.get(type, id: id)
     }

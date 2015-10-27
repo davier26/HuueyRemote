@@ -9,8 +9,15 @@
 import Foundation
 
 public class HuueyGroup {
+    /**
+        Holds all of the lights
+     */
     var lights: [HuueyLight]!
     
+    
+    /**
+        - Parameters: lights, [HuueyLight]
+     */
     public init(lights: [HuueyLight]) {
         self.lights = lights
     }

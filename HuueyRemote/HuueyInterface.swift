@@ -8,10 +8,14 @@
 
 import Foundation
 
+
+/**
+    HuueyGet: Enum that determines what url to generate
+ */
 public enum HuueyGet {
     case Lights
-    case ScenesSet
     case ScenesGet
+    case ScenesSet
     case Light
     case Discover
     case Api
@@ -19,7 +23,11 @@ public enum HuueyGet {
 }
 
 public class HuueyInterface {
+    private let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
     
+    /**
+        HuueyConstants: Constants that provide URL patterns and keys
+     */
     private struct HuueyConstants {
         static let HUE_KEY = "API_KEY"
         static let HUE_ADDR = "HUE_ADDR"
@@ -29,16 +37,31 @@ public class HuueyInterface {
         static let HUE_ENDPOINT_SCENES = "scenes"
         static let HUE_ENDPOINT_GROUPS = "groups"
     }
+    
+    /**
+        HuueyMethods: Constants that provide Http Methods
+     */
     private struct HuueyMethods {
         static let GET = "GET"
         static let POST = "POST"
         static let PUT = "PUT"
     }
     
+    /**
+        Hue Bridge IP
+     */
     var HUE_ADDR: String?
-    var HUE_KEY: String?
-    let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
     
+    /**
+        Hue Bridge Developer Key
+     */
+    var HUE_KEY: String?
+    
+    /**
+        Public initializer
+        
+        Trys to use saved data for connection otherwise sets values to nil
+     */
     public init() {
         let DEFAULT_ADD = self.defaults.valueForKey(HuueyConstants.HUE_ADDR)
         let DEFAULT_KEY = self.defaults.valueForKey(HuueyConstants.HUE_KEY)
@@ -56,27 +79,68 @@ public class HuueyInterface {
         }
     }
     
+    /**
+        Public initializer
+     
+        - Parameter: addr, Address of hue bridge
+        - Parameter: key, Developer key
+     */
     public init(addr: String, key: String) {
         self.HUE_ADDR = addr
         self.HUE_KEY = key
     }
     
+    /**
+        Sets light on/off
+     
+        - Parameter: on, Should light be on/off
+        - Parameter: light, HuueyLight: Light to be turned on/off
+     */
     public func set(on: Bool, light: HuueyLight) {
-        self.request(generateUrl(HuueyGet.Light, id: light.id) + "/state", method: HuueyMethods.PUT, data: generateDict(on))
+        self.request(generateUrl(HuueyGet.Light, id: light.getId()) + "/state", method: HuueyMethods.PUT, data: generateDict(on))
     }
     
+    /**
+        Sets scene to be active
+     
+        - Parameter: scene, HuueyScene
+     */
     public func set(scene: HuueyScene) {
         let data = generateDict(scene.getID())
         self.request(self.generateUrl(HuueyGet.ScenesSet), method: HuueyMethods.PUT, data:data)
     }
     
+    /**
+        Sets the brightness of a light
+     
+        - Parameter: bri, Brightness of light 0 - 255
+        - Parameter: light, HuueyLight: Light thats brightness should be changed
+     */
+    public func set(bri: Int, light: HuueyLight) {
+        let data = ["bri":bri]
+        self.request(generateUrl(HuueyGet.Light, id: light.getId()) + "/state", method: HuueyMethods.PUT, data: data)
+    }
+    
+    /**
+        Sets the hue/sat/bri of given light
+     
+        - Parameter: hue, Hue of light 0 - 65280.0
+        - Parameter: sat, Saturation of light 0 - 255
+        - Parameter: bri, Brightness of light 0 - 255
+        - Parameter: light, HuueyLight: Light thats state should get updated
+     */
     public func set(hue:Int, sat:Int, bri:Int, light:HuueyLight) {
         var data = generateDict(hue, sat: sat, bri: bri)
         data["on"] = true
         
-        self.request(generateUrl(HuueyGet.Light, id: light.id) + "/state", method: HuueyMethods.PUT, data: data)
+        self.request(generateUrl(HuueyGet.Light, id: light.getId()) + "/state", method: HuueyMethods.PUT, data: data)
     }
     
+    /**
+        Returns groups of data from bridge
+     
+        - Parameter: get, HuueyGet: What should be grabbed from the bridge
+     */
     public func get(get: HuueyGet) -> [AnyObject] {
         let request = self.request(generateUrl(get), method: HuueyMethods.GET)
         
@@ -103,6 +167,15 @@ public class HuueyInterface {
         return [""]
     }
     
+    /**
+        Returns HuueyLight data from bridge
+     
+        - Parameter: get, HuueyGet: What should be grabbed from the bridge
+        - Parameter: id, Id of needed data
+     
+        - Returns: Null: If no data is found
+        - Returns: HuueyLight: If
+     */
     public func get(get: HuueyGet, id: Int) -> AnyObject {
         let request = self.request(generateUrl(get, id: id), method: HuueyMethods.GET)
         
@@ -110,9 +183,16 @@ public class HuueyInterface {
             return HuueyLight(data: request, id: id)
         }
         
+        // TODO: Add support for groups
+        
         return false
     }
     
+    /**
+        Searches for bridge on network, if found sets default data for later use
+     
+        - Returns: Bool, Found/Not found bridge
+     */
     public func discoverBridge() -> Bool {
         let request = self.request(generateUrl(HuueyGet.Discover), method: HuueyMethods.GET)
         
@@ -123,6 +203,11 @@ public class HuueyInterface {
         return false
     }
     
+    /**
+        Trys to connect to bridge, hangs until blue activation button is clicked
+     
+        - Returns: Bool, Setup/Not setup bridge connection
+     */
     public func connectToBridge() -> Bool {
         var connected = false;
         var response: JSON = ""
@@ -142,6 +227,11 @@ public class HuueyInterface {
         return true;
     }
     
+    /**
+        Checks if its connected to the bridge
+     
+        - Returns: Bool, Setup/Not setup
+     */
     public func bridgeConnected() -> Bool {
         if self.HUE_ADDR == nil || self.HUE_KEY == nil {
             return false
@@ -159,6 +249,15 @@ public class HuueyInterface {
         }
     }
     
+    /**
+        Handles submitting the actual request.
+     
+        Calls buildRequest to generate request data
+     
+        - Parameter: url, Url of request
+        - Parameter: method, Http Method of request
+        - Parameter: data?, Http request body
+     */
     public func request(url: String, method: String, data:[String:AnyObject]?=nil) -> JSON {
         let session = NSURLSession.sharedSession()
         let dst = dispatch_semaphore_create(0)
@@ -174,10 +273,17 @@ public class HuueyInterface {
         
         dataTask.resume();
         dispatch_semaphore_wait(dst, DISPATCH_TIME_FOREVER)
-        
+  
         return requestData
     }
     
+    /**
+        Handles building the request
+     
+        - Parameter: endpoint, Url of request
+        - Parameter: method, Http Method of request
+        - Parameter: data?, Http request body
+     */
     private func buildRequest(endpoint: String, method: String, data:[String:AnyObject]?=nil) -> NSMutableURLRequest {
         let url = NSURL(string: endpoint)
         let request = NSMutableURLRequest(URL: url!)
@@ -192,6 +298,12 @@ public class HuueyInterface {
         return request;
     }
     
+    /**
+        Generates required url based on type: HuueyGet
+     
+        - Parameter: type, HuueyGet
+        - Parameter: id?, ID of light/scene/group
+     */
     private func generateUrl(type: HuueyGet, id:Int?=nil) -> String {
         var baseUrl: String = ""
         
@@ -226,6 +338,24 @@ public class HuueyInterface {
         return baseUrl
     }
     
+    /**
+        Generates dictionary for request body
+     
+        - Parameter: on, On/Off status of light
+     */
+    private func generateDict(on: Bool) -> [String:Bool] {
+        return [
+            "on": on
+        ]
+    }
+    
+    /**
+        Generates dictionary for request body.
+     
+        Sets light state to ON
+     
+        - Parameter: scene, String: ID of scene to activate     
+     */
     private func generateDict(scene: String) -> [String:AnyObject] {
         return [
             "scene": scene,
@@ -233,12 +363,15 @@ public class HuueyInterface {
         ]
     }
     
-    private func generateDict(on: Bool) -> [String:Bool] {
-        return [
-            "on": on
-        ]
-    }
-    
+    /**
+        Generates dictionary for request body
+     
+        Sets light state to ON
+     
+        - Parameter: hue, Int: Light Hue 0 - 65280.0
+        - Parameter: sat, Int: Light Saturation 0 - 255
+        - Parameter: bri, Int: Light Brightness 0 - 255
+     */
     private func generateDict(hue:Int, sat:Int, bri:Int) -> [String:AnyObject] {
         return [
             "hue":hue,
