@@ -149,3 +149,8 @@
 	```
 	var light = self.huuey.get(HuueyGet.Light, id: self.huuey.lights[0].getId()
 	```
+	
+## Future improvements
+* Add ability to create/edit/delete new groups of lights
+* Add ability to create/edit/delete scenes
+* Test support for multiple bridges
