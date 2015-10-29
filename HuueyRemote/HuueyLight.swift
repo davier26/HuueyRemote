@@ -106,10 +106,18 @@ public class HuueyLight {
         - Returns: UIColor     
      */
     public func getUIColor() -> UIColor {
-        let hue:Float = Float(self.getColor().integerValue)
-        let sat:Double = Double(self.getSaturation().integerValue)
-        let bri:Double = Double(self.getBrightness().integerValue)
         
-        return UIColor(hue: CGFloat(round((hue/65280.0)*1000)/1000), saturation: CGFloat(sat), brightness: CGFloat(bri), alpha: 1.0)
+        var hue = CGFloat(self.getColor().integerValue)
+        var sat = CGFloat(self.getSaturation().integerValue)
+        var bri = CGFloat(self.getBrightness().integerValue)
+
+        
+        hue = round((hue/65280.0)*1000)/1000
+        sat = round((sat/255.0)*1000)/1000
+        bri = round((bri/255.0)*1000)/1000
+        
+        let color = UIColor(hue: hue, saturation: sat, brightness: bri, alpha: 1.0)
+        
+        return color
     }
 }
