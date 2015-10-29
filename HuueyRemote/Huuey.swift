@@ -68,6 +68,8 @@ public class Huuey {
         Grabs initial light data from the bridge
      */
     public func setup() {
+        self.interface = HuueyInterface()
+        
         // TODO: Implement Groups
         self.scenes = self.interface.get(HuueyGet.ScenesGet) as! [HuueyScene]
         self.lights = self.interface.get(HuueyGet.Lights) as! [HuueyLight]
