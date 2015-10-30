@@ -197,7 +197,8 @@ public class HuueyInterface {
         let request = self.request(generateUrl(HuueyGet.Discover), method: HuueyMethods.GET)
         
         if request.count > 0 {
-            self.defaults.setValue(request[0]["internalipaddress"].string, forKeyPath: HuueyConstants.HUE_ADDR)
+            self.HUE_ADDR = request[0]["internalipaddress"].string!
+            self.defaults.setValue(self.HUE_ADDR, forKeyPath: HuueyConstants.HUE_ADDR)
             return true
         }
         return false
@@ -208,11 +209,13 @@ public class HuueyInterface {
      
         - Returns: Bool, Setup/Not setup bridge connection
      */
-    public func connectToBridge() -> Bool {
+    public func connectToBridge(timeout: NSTimeInterval!=60) -> Bool {
         var connected = false;
         var response: JSON = ""
         
-        while(!connected) {
+        let timeoutDate = NSDate(timeIntervalSinceNow: timeout)
+        
+        while !connected && NSDate().compare(timeoutDate) == .OrderedAscending {
             response = self.request(generateUrl(HuueyGet.Api), method:  HuueyMethods.POST, data: ["devicetype":HuueyConstants.HUE_DTYPE])
             
             if response[0]["error"]["type"] != 101 {
@@ -222,9 +225,12 @@ public class HuueyInterface {
                 sleep(2)
             }
         }
-        self.defaults.setValue(self.HUE_KEY, forKey: HuueyConstants.HUE_KEY)
         
-        return true;
+        if connected {
+            self.defaults.setValue(self.HUE_KEY, forKey: HuueyConstants.HUE_KEY)
+        }
+        
+        return connected
     }
     
     /**

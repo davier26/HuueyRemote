@@ -8,6 +8,14 @@
 
 import Foundation
 
+public enum BridgeState {
+    case Disconnected
+    case Connected
+    case NeedAuth
+    case Failed
+    case BridgeNotFound
+}
+
 public class Huuey {
     /**
         Private HuueyInterface for connections
@@ -33,7 +41,7 @@ public class Huuey {
         self.interface = HuueyInterface()
         
         if self.isReady() {
-            self.setup()
+            self.getData()
         }
     }
     
@@ -47,7 +55,7 @@ public class Huuey {
      */
     public init(addr: String, key: String) {
         self.interface = HuueyInterface(addr: addr, key: key)
-        self.setup()
+        self.getData()
     }
     
     /**
@@ -59,7 +67,7 @@ public class Huuey {
      */
     public init(interface: HuueyInterface) {
         self.interface = interface
-        self.setup()
+        self.getData()
     }
     
     /**
@@ -67,12 +75,32 @@ public class Huuey {
      
         Grabs initial light data from the bridge
      */
-    public func setup() {
+    public func getData() {
         self.interface = HuueyInterface()
         
         // TODO: Implement Groups
         self.scenes = self.interface.get(HuueyGet.ScenesGet) as! [HuueyScene]
         self.lights = self.interface.get(HuueyGet.Lights) as! [HuueyLight]
+    }
+    
+    public func setup(timeout:NSTimeInterval, onSetup: (bridgeState: BridgeState) -> Void) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            var found = false
+            let timeoutDate = NSDate(timeIntervalSinceNow: timeout)
+            
+            while !found && NSDate().compare(timeoutDate) == .OrderedAscending {
+                if self.discoveredBridge() {
+                    found = true
+                    onSetup(bridgeState: .NeedAuth)
+                }
+            }
+            
+            if self.connectedToBridge() {
+                onSetup(bridgeState: .Connected)
+            } else {
+                onSetup(bridgeState: .Failed)
+            }
+        }
     }
     
     /**
