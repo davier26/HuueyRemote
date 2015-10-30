@@ -41,7 +41,7 @@
 			if self.huuey.discoveredBridge() {
 				found = true
 				// Notifiy the user that the bridge was found and exit the loop
-			} xelse {
+			} else {
 				// Update your ui or something to tell the user that you can't find his bridge
 			}
 		}
