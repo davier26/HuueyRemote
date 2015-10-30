@@ -129,6 +129,9 @@
 	var light = self.huuey.get(HuueyGet.Light, id: self.huuey.lights[0].getId())
 	```
 	
+## Example
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/LYRup8S-uY0/0.jpg)](http://www.youtube.com/watch?v=LYRup8S-uY0)
+	
 ## Future improvements
 * Add ability to create/edit/delete new groups of lights
 * Add ability to create/edit/delete scenes
