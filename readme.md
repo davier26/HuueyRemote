@@ -17,66 +17,41 @@
 
 ## Setup bridge instructions
 
+
 1. Since we need to make sure you have an active connection to the bridge you need to run through the intial setup at least one time before you can use Huuey(). In your viewDidLoad() run the following code:
 
 	```
 	if huuey.isReady() {
         self.setup = true
-    }else {
-    	// Send your user to the dashboard that controls your lights
-    }
+   }
 	```
 	This will verify if you have a connection to the bridge, if you do it sets setup to true
 
-2. Next we need to check the setup variable and trigger the bridge discovery method. If setup == false. Inside of your viewDidAppear() put the following code:
+2. If setup == false. Then we need to discover your bridge on your network and generate API keys
+
+	Inside of your viewDidAppear() put the following code:
 
 	```
 	if !self.setup {
-        self.setup = true
-        
-        // Trigger your bridge discovery view here
-    }
-	```
-	Your bridge discovery view should have some sort of indicator to tell the user that you are searching for the bridge
-	
-3. In your bridge discovery view create another instance class of type Huuey()
-
-	```
-	var huuey: Huuey = Huuey()
-	```	
-4. Inside of your viewDidLoad() put the following code:
-
-	```
-	var found = false
-    
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+		self.setup = true
+		    
+		var found = false
+		    
 		while !found {
 			if self.huuey.discoveredBridge() {
 				found = true
-				
 				// Notifiy the user that the bridge was found and exit the loop
 			}else {
 				// Update your ui or something to tell the user that you can't find his bridge
 			}
 		}
-		// Send your user to your bridge authentication view here
+			
+		if self.huuey.connectedToBridge() {
+			// connectedToBridge() will run until the blue auth button on the bridge is pressed
+			// If connectedToBrige() is true you can start controlling your lights
+		}
 	}
 	```
-	This will trigger the while loop to continue to search for the bridge until it is found
-	
-5. In your bridge authentication view create another instance class of type Huuey()
-
-	```
-	var huuey: Huuey = Huuey()
-	```	
-6. After your user is on the authentication view run the following code inside of viewDidAppear()
-
-	```
-	if self.huuey.connectedToBridge() {
-	    // Redirect them to whatever view you want
-	}
-	```
-	connectedToBrige() keeps running until the user presses the blue button. After it returns you have an active connection to the bridge!
 	
 ## Modify light instructions
 
@@ -90,8 +65,8 @@
 	```
 	self.huuey.lights
 	self.huuey.scenes
-	
 	```
+	self.huuey.setup() gets ran whenever you initialize a new Huuey() object, only call manually if you need to update the array of lights/scenes
 2. Huuey() exposes the following functions for controlling your lights:
 
 	```
@@ -147,7 +122,7 @@
 	Example of getting details about a specific light (Only single lights are supported right now)
 	
 	```
-	var light = self.huuey.get(HuueyGet.Light, id: self.huuey.lights[0].getId()
+	var light = self.huuey.get(HuueyGet.Light, id: self.huuey.lights[0].getId())
 	```
 	
 ## Future improvements
