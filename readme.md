@@ -32,25 +32,29 @@
 	Inside of your viewDidAppear() put the following code:
 
 	```
-	if !self.setup {
-		self.setup = true
-		    
-		var found = false
-		    
-		while !found {
-			if self.huuey.discoveredBridge() {
-				found = true
-				// Notifiy the user that the bridge was found and exit the loop
-			} else {
-				// Update your ui or something to tell the user that you can't find his bridge
-			}
-		}
-			
-		if self.huuey.connectedToBridge() {
-			// connectedToBridge() will run until the blue auth button on the bridge is pressed
-			// If connectedToBrige() is true you can start controlling your lights
-		}
-	}
+	override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+        
+        if !self.setup {
+	        huuey.setupWithTimeout(60) { (bridgeState) -> Void in
+	            dispatch_async(dispatch_get_main_queue()) {
+	                switch bridgeState {
+	                case .BridgeNotFound:
+	                    print("Not found!")
+	                case .Connected:
+	                    print("Connected")
+	                case .Disconnected:
+	                    print("Disconnected")
+	                case .Failed:
+	                    print("Failed")
+	                case .NeedAuth:
+	                    print("Need Auth")
+	                }
+	            }
+	        }
+        }
+    }
 	```
 	
 ## Modify light instructions

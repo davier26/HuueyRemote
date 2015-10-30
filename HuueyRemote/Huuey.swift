@@ -83,7 +83,7 @@ public class Huuey {
         self.lights = self.interface.get(HuueyGet.Lights) as! [HuueyLight]
     }
     
-    public func setup(timeout:NSTimeInterval, onSetup: (bridgeState: BridgeState) -> Void) {
+    public func setupWithTimeout(timeout:NSTimeInterval, onSetup: (bridgeState: BridgeState) -> Void) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             var found = false
             let timeoutDate = NSDate(timeIntervalSinceNow: timeout)
