@@ -130,7 +130,7 @@
 	```
 	
 ## Example
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/LYRup8S-uY0/0.jpg)](http://www.youtube.com/watch?v=LYRup8S-uY0)
+[![Youtube example](http://h10staging.com/huueyremote/huuey_remote_example.png)](http://www.youtube.com/watch?v=LYRup8S-uY0)
 	
 ## Future improvements
 * Add ability to create/edit/delete new groups of lights
