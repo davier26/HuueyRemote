@@ -41,15 +41,15 @@
 	            dispatch_async(dispatch_get_main_queue()) {
 	                switch bridgeState {
 	                case .BridgeNotFound:
-	                    print("Not found!")
+	                    // We couldn't find the bridge on the network.
 	                case .Connected:
-	                    print("Connected")
+	                    // Object has connection to the bridge.
 	                case .Disconnected:
-	                    print("Disconnected")
+	                    // Device is disconnected.
 	                case .Failed:
-	                    print("Failed")
+	                    // Either the user missed there chance to press the button or we got invalid json.
 	                case .NeedAuth:
-	                    print("Need Auth")
+	                    // Let the user know they need to press the blue activation button.
 	                }
 	            }
 	        }
@@ -62,7 +62,7 @@
 1. After you know you have an active connection to the bridge run:
 
 	```
-	self.huuey.setup()
+	self.huuey.getData()
 	``` 
 	This function will scan your bridge and grab any lights/scenes it finds and populate the public variables:
 	
@@ -133,3 +133,8 @@
 * Add ability to create/edit/delete new groups of lights
 * Add ability to create/edit/delete scenes
 * Test support for multiple bridges
+* Test light strips + Other devices
+
+
+## Tested Hardware
+* Philips Hue white and color ambiance 
